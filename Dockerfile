@@ -12,8 +12,7 @@ RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_confi
 RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 
-RUN addgroup alpine \
-&& adduser alpine --group alpine \
+RUN useradd -m alpine \
 && echo "alpine:alpine" | /usr/sbin/chpasswd \
 && adduser alpine sudo
 
