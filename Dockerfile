@@ -22,7 +22,7 @@ RUN apt-get install -y curl gnupg gnupg2 gnupg1
 RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.gpg | apt-key add -
 RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.list | tee /etc/apt/sources.list.d/tailscale.list
 RUN apt-get update
-RUN apt-get install tailscale
+RUN apt-get install -y tailscale
 
 RUN rm -rf /tmp/tailscaled
 RUN mkdir -p /tmp/tailscaled
