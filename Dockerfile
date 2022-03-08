@@ -18,7 +18,7 @@ RUN useradd -m alpine \
 
 
 
-RUN apt-get install -y curl
+RUN apt-get install -y curl gnupg gnupg2 gnupg1
 RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.gpg | apt-key add -
 RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.list | tee /etc/apt/sources.list.d/tailscale.list
 RUN apt-get update
