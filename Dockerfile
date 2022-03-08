@@ -17,12 +17,6 @@ RUN useradd -m alpine \
 && adduser alpine sudo
 
 
-RUN mkdir /root/.ssh
-
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-EXPOSE 22
 
 RUN apt-get install -y curl
 RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.gpg | apt-key add -
@@ -42,6 +36,14 @@ RUN echo "nohup sudo -u irc tailscaled --tun=userspace-networking --socks5-serve
 RUN echo "until tailscale up; do sleep 1; done" > start.sh
 RUN echo "/usr/sbin/sshd -D" >> start.sh
 RUN chmod +x start.sh
+
+
+RUN mkdir /root/.ssh
+
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+EXPOSE 22
 
 ENTRYPOINT [ "start.sh" ]
 
