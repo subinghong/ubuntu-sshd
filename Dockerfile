@@ -24,8 +24,9 @@ RUN apt-get clean && \
 
 EXPOSE 22
 
-RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.gpg | sudo apt-key add -
-RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+RUN apt-get install -y curl
+RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.gpg | apt-key add -
+RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.list | tee /etc/apt/sources.list.d/tailscale.list
 RUN apt-get update
 RUN apt-get install tailscale
 
