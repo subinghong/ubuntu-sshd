@@ -1,4 +1,4 @@
-FROM       ubuntu:14.04
+FROM       ubuntu:18.04
 MAINTAINER Aleksandar Diklic "https://github.com/rastasheep"
 
 RUN apt-get update
@@ -24,4 +24,22 @@ RUN apt-get clean && \
 
 EXPOSE 22
 
-CMD    ["/usr/sbin/sshd", "-D"]
+RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.gpg | sudo apt-key add -
+RUN curl https://pkgs.tailscale.com/stable/ubuntu/bionic.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+RUN apt-get update
+RUN apt-get install tailscale
+
+RUN rm -rf /tmp/tailscaled
+RUN mkdir -p /tmp/tailscaled
+RUN chown irc.irc /tmp/tailscaled
+RUN rm -rf /var/run/tailscale
+RUN mkdir -p /var/run/tailscale
+RUN chown irc.irc /var/run/tailscale
+RUN cp /var/lib/tailscaled/tailscaled.state /tmp/tailscaled/tailscaled.state
+RUN chown irc.irc /tmp/tailscaled/tailscaled.state
+RUN echo "nohup sudo -u irc tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --state=/tmp/tailscaled/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock --port 41641 &" > start.sh
+RUN echo "/usr/sbin/sshd -D" >> start.sh
+RUN chmod +x start.sh
+
+ENTRYPOINT [ "start.sh" ]
+
