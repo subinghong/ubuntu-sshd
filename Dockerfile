@@ -9,13 +9,11 @@ RUN mkdir /var/run/sshd
 RUN echo 'root:atthemine' |chpasswd
 
 RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 
-RUN useradd -m alpine \
-&& echo "alpine:atthemine" | /usr/sbin/chpasswd \
-&& adduser alpine sudo
-
+#RUN useradd -m alpine  && echo "alpine:atthemine" | /usr/sbin/chpasswd  && adduser alpine sudo
 
 
 RUN apt-get install -y curl gnupg gnupg2 gnupg1
