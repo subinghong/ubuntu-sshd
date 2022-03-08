@@ -33,7 +33,7 @@ RUN chown irc.irc /var/run/tailscale
 #RUN cp /var/lib/tailscaled/tailscaled.state /tmp/tailscaled/tailscaled.state
 #RUN chown irc.irc /tmp/tailscaled/tailscaled.state
 RUN echo "nohup sudo -u irc tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --socket=/var/run/tailscale/tailscaled.sock --port 41641 &" > /start.sh
-RUN echo "until tailscale up; do sleep 1; done" > start.sh
+RUN echo "tailscale up --auth_key=$KEY" > start.sh
 RUN echo "/usr/sbin/sshd -D" >> start.sh
 RUN chmod +x /start.sh
 
