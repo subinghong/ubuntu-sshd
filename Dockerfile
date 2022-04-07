@@ -31,7 +31,6 @@ RUN rm -rf /var/run/tailscale
 RUN mkdir -p /var/run/tailscale
 
 RUN echo "#!/bin/bash" > start.sh
-RUN echo "# port_env ${PORT}" > start.sh
 RUN echo "nohup tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --socket=/var/run/tailscale/tailscaled.sock --port 41641 &" >> /start.sh
 RUN echo "tailscale up --auth-key=\${TAILSCALE_KEY} --hostname=\${TAILSCALE_HOSTNAME}" >> start.sh
 RUN echo "/usr/sbin/sshd -D" >> start.sh
