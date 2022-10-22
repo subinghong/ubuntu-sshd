@@ -12,7 +12,7 @@ RUN apt-get update
 RUN apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
 
-RUN echo 'root:\${ROOT_PASSWORD:-rootpw}' |chpasswd
+RUN echo 'root:rootpw' |chpasswd
 #RUN useradd -m alpine  && echo "alpine:atthemine" | /usr/sbin/chpasswd  && adduser alpine sudo
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
@@ -32,6 +32,7 @@ RUN rm -rf /var/run/tailscale
 RUN mkdir -p /var/run/tailscale
 
 RUN echo "#!/bin/bash" > start.sh
+RUN echo "sh -c 'echo root:\${ROOT_PASSWORD:-rootpw} | chpasswd'" >> start.sh
 RUN echo "nohup tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --socket=/var/run/tailscale/tailscaled.sock --port 41641 &" >> /start.sh
 RUN echo "tailscale up --auth-key=\${TAILSCALE_KEY} --hostname=\${TAILSCALE_HOSTNAME}" >> start.sh
 RUN echo "echo \$PORT > /APP_PORT.txt" >> start.sh
