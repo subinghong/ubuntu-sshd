@@ -4,6 +4,7 @@ FROM       ubuntu:18.04
 ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
+    ROOT_PASSWORD=${ROOT_PASSWORD} \
     TAILSCALE_KEY=${TAILSCALE_KEY} \
     TAILSCALE_HOSTNAME=${TAILSCALE_HOSTNAME}
 
@@ -11,7 +12,7 @@ RUN apt-get update
 RUN apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
 
-RUN echo 'root:root_password' |chpasswd
+RUN echo 'root:${ROOT_PASSWORD:-root_password}' |chpasswd
 #RUN useradd -m alpine  && echo "alpine:atthemine" | /usr/sbin/chpasswd  && adduser alpine sudo
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
@@ -33,6 +34,7 @@ RUN mkdir -p /var/run/tailscale
 RUN echo "#!/bin/bash" > start.sh
 RUN echo "nohup tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --socket=/var/run/tailscale/tailscaled.sock --port 41641 &" >> /start.sh
 RUN echo "tailscale up --auth-key=\${TAILSCALE_KEY} --hostname=\${TAILSCALE_HOSTNAME}" >> start.sh
+RUN echo "echo \$PORT > /APP_PORT.txt" >> start.sh
 RUN echo "/usr/sbin/sshd -D" >> start.sh
 RUN chmod +x /start.sh
 
